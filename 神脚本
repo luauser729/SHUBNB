@@ -1,0 +1,141 @@
+-- by 黑客鸡蛋 · V18.2 内部测试
+-- BEGIN
+local _LOG=function() end
+local _ERR=(type(warn)=="function" and warn) or (type(print)=="function" and print) or function() end
+local _FLOOR=function(x) if type(x)~="number" then return 0 end return x-x%1 end
+local _A1="\000\001\002\003\004\005\006\007\008\009\010\011\012\013\014\015\016\017\018\019\020\021\022\023\024\025\026\027\028\029\030\031\032\033\034\035\036\037\038\039\040\041\042\043\044\045\046\047\048\049\050\051\052\053\054\055\056\057\058\059\060\061\062\063"
+local _A2="\064\065\066\067\068\069\070\071\072\073\074\075\076\077\078\079\080\081\082\083\084\085\086\087\088\089\090\091\092\093\094\095\096\097\098\099\100\101\102\103\104\105\106\107\108\109\110\111\112\113\114\115\116\117\118\119\120\121\122\123\124\125\126\127"
+local _A3="\128\129\130\131\132\133\134\135\136\137\138\139\140\141\142\143\144\145\146\147\148\149\150\151\152\153\154\155\156\157\158\159\160\161\162\163\164\165\166\167\168\169\170\171\172\173\174\175\176\177\178\179\180\181\182\183\184\185\186\187\188\189\190\191"
+local _A4="\192\193\194\195\196\197\198\199\200\201\202\203\204\205\206\207\208\209\210\211\212\213\214\215\216\217\218\219\220\221\222\223\224\225\226\227\228\229\230\231\232\233\234\235\236\237\238\239\240\241\242\243\244\245\246\247\248\249\250\251\252\253\254\255"
+local function _cc(b) b=_FLOOR(b)%256 if b<0 then b=b+256 end if b<64 then return string.sub(_A1,b+1,b+1) elseif b<128 then return string.sub(_A2,b-63,b-63) elseif b<192 then return string.sub(_A3,b-127,b-127) else return string.sub(_A4,b-191,b-191) end end
+local _hf=function(s) local h=5381 for i=1,#s do h=(h*33+string.byte(s,i))%4294967296 end return h end
+local _NATIVE={print=print,warn=warn,error=error,assert=assert,tostring=tostring,tonumber=tonumber,type=type,pcall=pcall,xpcall=xpcall,pairs=pairs,ipairs=ipairs,next=next,select=select,unpack=table and (table.unpack or unpack),rawget=rawget,rawset=rawset,setmetatable=setmetatable,getmetatable=getmetatable,string=string,table=table,math=math,os=os,coroutine=coroutine,debug=debug}
+pcall(function() _NATIVE.game=game end)
+pcall(function() _NATIVE.workspace=workspace end)
+pcall(function() _NATIVE.Instance=Instance end)
+pcall(function() _NATIVE.task=task end)
+pcall(function() _NATIVE.tick=tick end)
+pcall(function() _NATIVE.getgenv=getgenv end)
+local _GREF
+do if type(getgenv)=="function" then pcall(function() local g=getgenv() if type(g)=="table" then _GREF=g end end) end
+if _GREF==nil and type(getfenv)=="function" then pcall(function() _GREF=getfenv() end) end
+if _GREF==nil then _GREF=_G or {} end end
+local _U; pcall(function() local mt={} mt.__index=function(t,k) local o=setmetatable({},mt) rawset(t,k,o) return o end mt.__call=function(t,...) return setmetatable({},mt) end mt.__newindex=function(t,k,v) rawset(t,k,v) end _U=setmetatable({},mt) end)
+local _L1H="01017d01003e0103c601026b000000"
+local L1P={}
+do local _n=#_L1H local _i=1 while _i+1<=_n do local _h1=string.byte(_L1H,_i) local _h2=string.byte(_L1H,_i+1) if _h1<=57 then _h1=_h1-48 else _h1=_h1-87 end if _h2<=57 then _h2=_h2-48 else _h2=_h2-87 end L1P[#L1P+1]=_h1*16+_h2 _i=_i+2 end end
+local _XT={}
+for _i=0,15 do local _r={} for _j=0,15 do local a,b,rr,p=_i,_j,0,1 for _=1,4 do local x,y=a%2,b%2 if x~=y then rr=rr+p end a=(a-x)/2 b=(b-y)/2 p=p*2 end _r[_j]=rr end _XT[_i]=_r end
+local function _bx(a,b) a=_FLOOR(tonumber(a) or 0) b=_FLOOR(tonumber(b) or 0) a=a%256 b=b%256 if a<0 then a=a+256 end if b<0 then b=b+256 end local al=a%16 local ah=(a-al)/16 local bl=b%16 local bh=(b-bl)/16 return _XT[al][bl]+_XT[ah][bh]*16 end
+local function _L1X(P) local r={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0} local pc=1 while true do local op=P[pc] if not op or op==0 then break end local a=(P[pc+1] or 0)+1 local v=P[pc+2] or 0 if a<1 or a>16 then a=((a-1)%16)+1 end if op==1 then r[a]=v end r[a]=_FLOOR(r[a]) pc=pc+3 end return _FLOOR(r[1]*16777216+r[2]*65536+r[3]*256+r[4]) end
+local _p1=_L1X(L1P)
+local k2=_p1
+local _K2R=k2
+local _sc=1 local _scnt=0
+local _sdv=0
+pcall(function() local _s=((game and game.PlaceId or 0)*31+(game and game.CreatorId or 0)*7)%65536 if _s and _s>0 then _sdv=_s end end)
+if _sdv==0 then _sdv=7919 end
+local _now
+if type(tick)=="function" then _now=tick
+elseif type(os)=="table" and type(os.clock)=="function" then _now=os.clock
+elseif type(os)=="table" and type(os.time)=="function" then _now=os.time
+else _now=function() return 0 end end
+local _T_LIMIT=12
+local _FRAME_GAP=128
+local _TIMEOUT_HIT=false
+local _STEP_HARD_LIMIT=3000000
+do local _bad=0
+pcall(function() if type(debug)=="table" and type(debug.getupvalue)=="function" then local _f=function() return 1 end local _n,_v=debug.getupvalue(_f,1) if _v~=nil then _bad=_bad+1 end if _n~=nil and type(_n)~="string" then _bad=_bad+1 end end end)
+pcall(function() if type(string)=="table" and type(string.dump)=="function" then local _d=string.dump(function() return 1 end) if type(_d)~="string" then _bad=_bad+1 end if type(_d)=="string" and #_d<10 then _bad=_bad+1 end end end)
+pcall(function() if type(getrawmetatable)=="function" then local _mt=getrawmetatable({}) if _mt~=nil and type(_mt)~="table" then _bad=_bad+1 end end end)
+pcall(function() local s=tostring(pcall) if string.find(s,"KRNL",1,true) or string.find(s,"synapse",1,true) then _bad=_bad+1 end end)
+if _bad>0 then k2=(k2*31+_bad*137+17)%2147483647 if k2<1 then k2=1 end _K2R=k2 end
+end
+local SBOX={}
+do local _sb_seed=_FLOOR((k2*17)%2147483647) if _sb_seed<1 then _sb_seed=1 end for i=1,256 do SBOX[i]=i-1 end local s=_sb_seed for i=256,2,-1 do s=_FLOOR(16807*s)%2147483647 local j=s%i+1 SBOX[i],SBOX[j]=SBOX[j],SBOX[i] end end
+local function _ks(seed,cnt) local s=_FLOOR(seed)%2147483647 if s<1 then s=1 end local o={} for i=1,cnt do s=_FLOOR(16807*s)%2147483647 o[i]=s end return o end
+local function _gk(idx,varIdx,salt) local _k2=_FLOOR(k2 or 0) local seed=_FLOOR((_k2+idx*1000003+varIdx*7919+salt*104729)%2147483647) if seed<1 then seed=1 end
+local _si=_FLOOR(seed%256)+1 local b0=SBOX[_si] local b1=SBOX[_FLOOR(seed/256)%256+1] local b2=SBOX[_FLOOR(seed/65536)%256+1] local b3=SBOX[_FLOOR(seed/16777216)%256+1]
+local mixed=_FLOOR((b0*16777216+b1*65536+b2*256+b3)%2147483647) if mixed>0 then seed=mixed end
+local st=_ks(seed,50) local k1,k2a,pk={},{},{} for i=1,16 do k1[i]=(st[i]%255)+1 k2a[i]=(st[16+i]%255)+1 pk[i]=(st[32+i]%255)+1 end return k1,k2a,pk,(st[49]%7)+1,(st[50]%255)+1 end
+local function _proto_k(idx) local seed=_FLOOR((k2 or 0)+idx*3000017+23)%2147483647 if seed<1 then seed=1 end local st=_ks(seed,2) return (st[1]%255)+1,(st[2]%26)+3 end
+local _PROG2_IDX={15,12,27,16,10,17,6,13,5,32,31,23,22,26,25,30,24,14,7,28,8,18,11,21,9,4,20,3,29,2,1,19}
+local _protoSBOX={} local _protoH1={} local _protoH={} local _protoInv={}
+local function _getProtoSBOX(idx) local s=_protoSBOX[idx] if s then return s end local seed=_FLOOR((k2 or 0)+idx*13337)%2147483647 if seed<1 then seed=1 end local sbox={} for i=0,255 do sbox[i]=i end local st=seed for i=255,1,-1 do st=_FLOOR(16807*st)%2147483647 local j=st%(i+1) sbox[i],sbox[j]=sbox[j],sbox[i] end _protoSBOX[idx]=sbox return sbox end
+local function _getProtoH(idx,lv) local ph=_protoH[idx] if ph and ph[lv] then return ph[lv] end local sbox=_getProtoSBOX(idx) local seed=_FLOOR((k2 or 0)+idx*77777+lv*99991)%2147483647 if seed<1 then seed=1 end local arr={} for i=0,255 do arr[i]=i end local st=seed for i=255,1,-1 do st=_FLOOR(16807*st)%2147483647 local j=st%(i+1) arr[i],arr[j]=arr[j],arr[i] end local result={} for i=0,255 do result[i]=sbox[arr[i]] end if not ph then ph={} _protoH[idx]=ph end ph[lv]=result return result end
+local function _getProtoInv(idx,lv) local pi=_protoInv[idx] if pi and pi[lv] then return pi[lv] end local h=_getProtoH(idx,lv) local inv={} for i=0,255 do inv[h[i]]=i end if not pi then pi={} _protoInv[idx]=pi end pi[lv]=inv return inv end
+local function _getProtoH1(idx) local h=_protoH1[idx] if h then return h end local sbox=_getProtoSBOX(idx) local seed=_FLOOR((k2 or 0)+idx*7000003)%2147483647 if seed<1 then seed=1 end local st=_ks(seed,32*3+100) local h1={} local used={} for op=1,32 do local key local tries=0 repeat local base=(op-1)*3+tries key=st[(base%#st)+1]%256 if key==0 then key=1 end key=sbox[key] tries=tries+1 if tries>500 then break end until not used[key] used[key]=true h1[key]=_PROG2_IDX[op] end _protoH1[idx]=h1 return h1 end
+local CONST={{"h","bcf3","4c1a"},{"h","207df78","7bbbadbe91242"}}
+local _constCache={}
+local function _CONST(i) local c=_constCache[i] if c~=nil then return c end local e=CONST[i] if type(e)=="table" then if e[1]=="n" then _constCache[i]=e[2] return e[2] end if e[1]=="nd" then local hex=e[2] local k1,k2a,pk,rot,kk=_gk(i,0,5) local n=_FLOOR(#hex/2) local pw=2^rot local pw2=2^(8-rot) local buf={} for j=1,n do local b=tonumber(string.sub(hex,j*2-1,j*2),16) or 0 b=_bx(b,pk[((j-1)%#pk)+1]) b=b-kk if b<0 then b=b+256 end b=_bx(b,k2a[((j-1)%#k2a)+1]) local lo=(b*pw)%256 local hi=_FLOOR(b/pw2) b=_FLOOR((lo+hi)%256) b=_bx(b,k1[((j-1)%#k1)+1]) buf[j]=_cc(b) end local v=tonumber(table.concat(buf)) or 0 _constCache[i]=v return v end if e[1]=="h" then local hex=e[2]..e[3] local k1,k2a,pk,rot,kk=_gk(i,0,3) local n=_FLOOR(#hex/2) local pw=2^rot local pw2=2^(8-rot) local buf={} for j=1,n do local b=tonumber(string.sub(hex,j*2-1,j*2),16) or 0 b=_bx(b,pk[((j-1)%#pk)+1]) b=b-kk if b<0 then b=b+256 end b=_bx(b,k2a[((j-1)%#k2a)+1]) local lo=(b*pw)%256 local hi=_FLOOR(b/pw2) b=_FLOOR((lo+hi)%256) b=_bx(b,k1[((j-1)%#k1)+1]) buf[j]=_cc(b) end local r=table.concat(buf) _constCache[i]=r return r end end _constCache[i]=e return e end
+local function _GLOB(a) local k=_CONST(a) local v=_NATIVE[k] if v~=nil then return v end if _GREF~=nil then v=_GREF[k] if v~=nil then return v end end return _U end
+local function _SET_GLOB(a,v) local k=_CONST(a) if _GREF~=nil then _GREF[k]=v end end
+local STRS={{{"0480540ca918c382cebd3295b21ddb0ae5feb4ac6b1f349a4f1ff0ad9085752ae41949ecebbf36d9ce87cab7ad5852ebc0c2e1","edeb3eab821c549f"},{"a115cbdc8c6e9eb3c414760976340ed30","dcdcfd8448d69b0f448be0e4a13e2f7ad26ebf0549929e8c44f7ddd69acbeef294de81054a99db3eeb9c7"},{"1868faf9b5e4606ab37d772c3f37cb250018c21","145a602689315072ea74d335dc0323a0125ce8238b30f8da4fd66ea8ce91910c1256e5a6a4fa348"},{"26a87cf6cc04453887a58f273482001f97498ca62d808944c694ae3b054e91cf161dfd06ed708","8a4878843d6b01dcf70c04f2187ed31b9386e20cc"}},{{"86b88","f2568ebac"},{"964ba99","e4c72b3"},{"6993f","1d130cfca"},{"fbea","93fafba9c0"}}}
+local _cache={}
+local _lastHash=5381
+local function _S(i) local c=_cache[i] if c then return c end _scnt=_scnt+1 local dk=_FLOOR(i*31+_lastHash*7+_sdv+_scnt*17+_K2R*13)%65536 _sc=_FLOOR(_sc*65+12345+dk)%65536 local _v=_FLOOR(_sc%#STRS[i])+1 local e=STRS[i][_v] if not e then return "" end local hex=e[1]..e[2] local k1,k2a,pk,rot,kk=_gk(i,_v-1,1) local n=_FLOOR(#hex/2) local pw=2^rot local pw2=2^(8-rot) local buf={} local h=5381 for j=1,n do local b=tonumber(string.sub(hex,j*2-1,j*2),16) or 0 b=_bx(b,pk[((j-1)%#pk)+1]) b=b-kk if b<0 then b=b+256 end b=_bx(b,k2a[((j-1)%#k2a)+1]) local lo=(b*pw)%256 local hi=_FLOOR(b/pw2) b=_FLOOR((lo+hi)%256) b=_bx(b,k1[((j-1)%#k1)+1]) local ch=_cc(b) buf[j]=ch h=(h*33+string.byte(ch,1))%4294967296 end local r=table.concat(buf) _lastHash=h _cache[i]=r return r end
+local PROTO={{
+    "99,207,179,177,29,248,193",
+    "4,25,45,65,86,105,126",
+    "25,60,95,130,165,200,236",
+    "9,64,119,174,229,28,83",
+    {},{6,2,7,5,4,1,3},3,6,24
+  }}
+local _up=_NATIVE.unpack
+local PROG2={{{24,-1}},{{31,-1},{23,208}},{{29,-1},{23,208}},{{10,208},{23,163}},{{8,-1},{23,208}},{{6,-1},{23,208}},{{24,-1}},{{26,-1}},{{19,-1},{23,208}},{{4,-1},{23,208}},{{27,208},{23,163}},{{2,1},{23,208}},{{7,-1},{23,208}},{{22,-1}},{{1,208},{23,163}},{{3,-1},{23,208}},{{5,-1},{23,208}},{{9,208},{23,163}},{{24,-1}},{{24,0}},{{28,208},{23,163}},{{18,208},{23,163}},{{16,208},{23,163}},{{21,-1,-2},{23,208}},{{14,-1},{23,208}},{{13,-1},{23,208}},{{2,0},{23,208}},{{25,-1}},{{30,-1,-2}},{{20,-1},{23,208}},{{17,-1},{23,208}},{{15,-1},{23,208}}}
+local function _V(x,a,b,c) if x>=0 then return x end if x==-1 then return a end if x==-2 then return b end return c end
+local function _M2(v,prog,a,b,c) local pc2=1 local n=#prog while pc2<=n do local ins=prog[pc2] local op=ins[1] if op==0 then return end
+if op==1 then v.sp=v.sp+1 v.st[v.sp]=nil
+elseif op==2 then local p=ins[2] if p<0 then p=_V(p,a,b,c) end v.sp=v.sp+1 v.st[v.sp]=(p~=0)
+elseif op==3 then v.sp=v.sp+1 v.st[v.sp]=_CONST(_V(ins[2],a,b,c))
+elseif op==4 then v.sp=v.sp+1 v.st[v.sp]=_S(_V(ins[2],a,b,c))
+elseif op==5 then v.sp=v.sp+1 v.st[v.sp]=v.lo[_V(ins[2],a,b,c)]
+elseif op==6 then v.lo[_V(ins[2],a,b,c)]=v.st[v.sp] v.st[v.sp]=nil v.sp=v.sp-1
+elseif op==7 then v.sp=v.sp+1 v.st[v.sp]=_GLOB(_V(ins[2],a,b,c))
+elseif op==8 then _SET_GLOB(_V(ins[2],a,b,c),v.st[v.sp]) v.st[v.sp]=nil v.sp=v.sp-1
+elseif op==9 then v.sp=v.sp+1 v.st[v.sp]={}
+elseif op==10 then v.st[v.sp]=nil v.sp=v.sp-1
+elseif op==11 then v.st[v.sp+1]=v.st[v.sp] v.sp=v.sp+1
+elseif op==12 then local t=v.st[v.sp] v.st[v.sp]=v.st[v.sp-1] v.st[v.sp-1]=t
+elseif op==13 then local ty=_V(ins[2],a,b,c) local y0=v.st[v.sp] local x0=v.st[v.sp-1] v.st[v.sp]=nil v.sp=v.sp-1 if ty==1 then v.st[v.sp]=x0+y0 elseif ty==2 then v.st[v.sp]=x0-y0 elseif ty==3 then v.st[v.sp]=x0*y0 elseif ty==4 then v.st[v.sp]=x0/y0 elseif ty==5 then v.st[v.sp]=x0%y0 elseif ty==6 then v.st[v.sp]=_FLOOR(x0/y0) elseif ty==7 then v.st[v.sp]=x0^y0 elseif ty==8 then v.st[v.sp]=tostring(x0)..tostring(y0) elseif ty==9 then v.st[v.sp]=(x0==y0) elseif ty==10 then v.st[v.sp]=(x0~=y0) elseif ty==11 then v.st[v.sp]=(x0<y0) elseif ty==12 then v.st[v.sp]=(x0>y0) elseif ty==13 then v.st[v.sp]=(x0<=y0) elseif ty==14 then v.st[v.sp]=(x0>=y0) elseif ty==15 then v.st[v.sp]=(x0 and y0) elseif ty==16 then v.st[v.sp]=(x0 or y0) end
+elseif op==14 then local ty=_V(ins[2],a,b,c) local x0=v.st[v.sp] if ty==1 then v.st[v.sp]=-x0 elseif ty==2 then v.st[v.sp]=not x0 elseif ty==3 then v.st[v.sp]=#x0 end
+elseif op==15 then v.st[v.sp]=v.st[v.sp][_S(_V(ins[2],a,b,c))]
+elseif op==16 then local k=v.st[v.sp] local o=v.st[v.sp-1] v.st[v.sp]=nil v.st[v.sp-1]=o[k] v.sp=v.sp-1
+elseif op==17 then local v0=v.st[v.sp] local o=v.st[v.sp-1] v.st[v.sp]=nil v.st[v.sp-1]=nil v.sp=v.sp-2 o[_S(_V(ins[2],a,b,c))]=v0
+elseif op==18 then local v0=v.st[v.sp] local k0=v.st[v.sp-1] local o=v.st[v.sp-2] v.st[v.sp]=nil v.st[v.sp-1]=nil v.st[v.sp-2]=nil o[k0]=v0 v.sp=v.sp-3
+elseif op==19 then local pk0=_V(ins[2],a,b,c) local cl0=v.lo local s=v.sp+1 v.sp=s v.st[s]=function(...) local n0=select("#",...) local a0={} for kk=1,n0 do a0[kk]=(select(kk,...)) end return _RI(pk0,a0,cl0) end
+elseif op==20 then local ai=_V(ins[2],a,b,c) local s=v.sp local fn0=v.st[s] v.st[s]=nil v.sp=s-1 local ar={} for ii=ai,1,-1 do ar[ii]=v.st[v.sp] v.st[v.sp]=nil v.sp=v.sp-1 end local rv=fn0(_up(ar,1,ai)) v.sp=v.sp+1 v.st[v.sp]=rv
+elseif op==21 then local si=_V(ins[2],a,b,c) local bc=_V(ins[3],a,b,c) local s=v.sp local o0=v.st[s] v.st[s]=nil v.sp=s-1 local ar={} for ii=bc,1,-1 do ar[ii]=v.st[v.sp] v.st[v.sp]=nil v.sp=v.sp-1 end local fn0=o0[_S(si)] local rv=fn0(o0,_up(ar,1,bc)) v.sp=v.sp+1 v.st[v.sp]=rv
+elseif op==22 then local aa=_V(ins[2] or 0,a,b,c) if aa==0 then v.pc=0 else local s=v.sp v.ret=v.st[s-aa+1] v.pc=0 end return
+elseif op==23 then v.pc=v.pc+1 return
+elseif op==24 then v.pc=_V(ins[2],a,b,c) return
+elseif op==25 then local ai=_V(ins[2],a,b,c) local s=v.sp local c0=v.st[s] v.st[s]=nil v.sp=s-1 if c0 then v.pc=v.pc+1 else v.pc=ai end return
+elseif op==26 then local ai=_V(ins[2],a,b,c) local s=v.sp local c0=v.st[s] v.st[s]=nil v.sp=s-1 if not c0 then v.pc=v.pc+1 else v.pc=ai end return
+elseif op==27 then local s=v.sp local val0=v.st[s] v.st[s]=nil local t0=v.st[s-1] t0[#t0+1]=val0 v.sp=s-1
+elseif op==28 then local s=v.sp local v0=v.st[s] local k0=v.st[s-1] local t0=v.st[s-2] v.st[s]=nil v.st[s-1]=nil t0[k0]=v0 v.sp=s-2
+end pc2=pc2+1 end end
+local _compiled={}
+local _COMPILE_FAIL=false
+local _RUNTIME_READY=false
+local function _compile(idx) if not _RUNTIME_READY then return {} end local c=_compiled[idx] if c then return c end local proto=PROTO[idx] if not proto then return {} end local aStr=proto[1] local bStr=proto[2] local cStr=proto[3] local dStr=proto[4] proto[1]=nil proto[2]=nil proto[3]=nil proto[4]=nil local pof,pk=_proto_k(idx) local H1=_getProtoH1(idx) local ih2=_getProtoInv(idx,2) local ih3=_getProtoInv(idx,3) local ih4=_getProtoInv(idx,4) local ih5=_getProtoInv(idx,5) local pk2,pk3,pk4
+pk2=proto[7] pk3=proto[8] pk4=proto[9]
+local function _split(s) if not s then return {} end local t={} local i=1 local n=#s while i<=n do local j=string.find(s,",",i,true) if not j then t[#t+1]=tonumber(string.sub(s,i)) break end t[#t+1]=tonumber(string.sub(s,i,j-1)) i=j+1 end return t end local A=_split(aStr) local B=_split(bStr) local C=_split(cStr) local D=_split(dStr) local n=#A c={} for i=1,n do local i0=i-1 local encOp=(A[i]-i0*13)%256 if encOp<0 then encOp=encOp+256 end local encA=(B[i]-i0*17-23)%256 if encA<0 then encA=encA+256 end local encB=(C[i]-i0*29-41)%256 if encB<0 then encB=encB+256 end local encC=(D[i]-i0*31-7)%256 if encC<0 then encC=encC+256 end local final=(encOp-pof-i*pk)%256 if final<0 then final=final+256 end local h1key=ih2[ih3[ih4[ih5[final]]]] local pid=H1[h1key] if not pid then _COMPILE_FAIL=true end local a=encA local b=encB local cc=encC
+a=(encA-pof-i*pk2)%256 if a<0 then a=a+256 end
+b=(encB-pof-i*pk3)%256 if b<0 then b=b+256 end
+cc=(encC-pof-i*pk4)%256 if cc<0 then cc=cc+256 end
+c[i]={pid,a,b,cc} end _compiled[idx]=c return c end
+local _ABORT=false local _RI
+_RI=function(idx,args,parent) if _ABORT then return nil end _RUNTIME_READY=true local proto=PROTO[idx] if not proto then return end local arr=_compile(idx) local params=proto[5] local ord=proto[6] if not params or not ord then return end local v={pc=1,sp=0,st={},lo={},ret=nil} setmetatable(v.lo,{__index=parent or {}}) local np=#params for i=1,np do v.lo[params[i]]=args[i] end local _brk=false local _steps=0 local _t0=_now() while not _brk do _steps=_steps+1 if _ABORT then _brk=true break end
+if _steps%_FRAME_GAP==0 then local _dt=_now()-_t0 if _dt>_T_LIMIT then _TIMEOUT_HIT=true _ABORT=true _brk=true break end end
+if _steps>_STEP_HARD_LIMIT then _TIMEOUT_HIT=true _ABORT=true _brk=true break end local ins=arr[ord[v.pc]] if not ins then _brk=true break end local pid=ins[1] local prog=PROG2[pid] if not prog then _brk=true break end _M2(v,prog,ins[2],ins[3],ins[4]) if v.pc==0 then _brk=true end end return v.ret end
+local OUTER_FUNCS={{code={{5,1,0},{11,0,0},{0,0,0}},localCount=0,paramCount=0}}
+local _RO, _OM2
+_OM2=function(OL,OS,code) if not code then return end local OPC=1 local _steps=0 local _sp=0 local _t0=_now() while OPC<=#code do _steps=_steps+1 if _ABORT then return end
+if _steps%_FRAME_GAP==0 then local _dt=_now()-_t0 if _dt>_T_LIMIT then _TIMEOUT_HIT=true _ABORT=true return end end
+if _steps>_STEP_HARD_LIMIT then _TIMEOUT_HIT=true _ABORT=true return end local ins=code[OPC] if not ins then return end local op=ins[1] if op==0 then return elseif op==1 then _sp=_sp+1 OS[_sp]=OL[ins[2]] elseif op==2 then OL[ins[2]]=OS[_sp] OS[_sp]=nil _sp=_sp-1 elseif op==3 then _sp=_sp+1 OS[_sp]=_CONST(ins[2]) elseif op==4 then _sp=_sp+1 OS[_sp]=nil elseif op==5 then local argc=ins[3] local args={} for ii=argc,1,-1 do args[ii]=OS[_sp] OS[_sp]=nil _sp=_sp-1 end _sp=_sp+1 OS[_sp]=_RI(ins[2],args,OL) elseif op==6 then local argc=ins[3] local args={} for ii=argc,1,-1 do args[ii]=OS[_sp] OS[_sp]=nil _sp=_sp-1 end _sp=_sp+1 OS[_sp]=_RO(ins[2],args,argc) elseif op==7 then local fid=ins[2] _sp=_sp+1 OS[_sp]=function(...) local n0=select("#",...) local a0={} for kk=1,n0 do a0[kk]=(select(kk,...)) end return _RO(fid,a0,n0) end elseif op==8 then OPC=ins[2]-1 elseif op==9 then local v0=OS[_sp] OS[_sp]=nil _sp=_sp-1 if not v0 then OPC=ins[2]-1 end elseif op==10 then local v0=OS[_sp] OS[_sp]=nil _sp=_sp-1 if v0 then OPC=ins[2]-1 end elseif op==11 then OS[_sp]=nil _sp=_sp-1 elseif op==12 then _sp=_sp+1 OS[_sp]=OS[_sp-1] elseif op==13 then local a,b=OS[_sp-1],OS[_sp] OS[_sp-1],OS[_sp]=b,a elseif op==14 then local n0=ins[2] if n0==0 then return nil elseif n0==1 then local rv=OS[_sp] OS[_sp]=nil _sp=_sp-1 return rv else local r={} for ii=n0,1,-1 do r[ii]=OS[_sp] OS[_sp]=nil _sp=_sp-1 end return r end elseif op==15 then _sp=_sp+1 OS[_sp]=_GLOB(ins[2]) end OPC=OPC+1 end end
+_RO=function(fnId,args,argc) local fn=OUTER_FUNCS[fnId] if not fn then return end if not fn.code then return end local OL={} local n0=argc or fn.paramCount for i=1,n0 do OL[i]=args[i] end local OS={} return _OM2(OL,OS,fn.code) end
+R=function(idx,args,parent) _TIMEOUT_HIT=false _ABORT=false return _RO(idx or 1,args or {},nil) end
+local _rok,_rerr=pcall(function() R(1,{}) end)
+if not _rok then _ERR("[DTKD] 执行错误: "..tostring(_rerr)) end
+if _TIMEOUT_HIT then _ERR("[DTKD] 已中断: 超时") end
+-- END
