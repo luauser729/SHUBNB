@@ -1,4 +1,4 @@
--- by 黑客鸡蛋 · V18.2 内部测试
+-- by 神之 · v20.0.0
 -- BEGIN
 local _LOG=function() end
 local _ERR=(type(warn)=="function" and warn) or (type(print)=="function" and print) or function() end
@@ -21,7 +21,7 @@ do if type(getgenv)=="function" then pcall(function() local g=getgenv() if type(
 if _GREF==nil and type(getfenv)=="function" then pcall(function() _GREF=getfenv() end) end
 if _GREF==nil then _GREF=_G or {} end end
 local _U; pcall(function() local mt={} mt.__index=function(t,k) local o=setmetatable({},mt) rawset(t,k,o) return o end mt.__call=function(t,...) return setmetatable({},mt) end mt.__newindex=function(t,k,v) rawset(t,k,v) end _U=setmetatable({},mt) end)
-local _L1H="01017d01003e0103c601026b000000"
+local _L1H="01018001003f0103e101023a000000"
 local L1P={}
 do local _n=#_L1H local _i=1 while _i+1<=_n do local _h1=string.byte(_L1H,_i) local _h2=string.byte(_L1H,_i+1) if _h1<=57 then _h1=_h1-48 else _h1=_h1-87 end if _h2<=57 then _h2=_h2-48 else _h2=_h2-87 end L1P[#L1P+1]=_h1*16+_h2 _i=_i+2 end end
 local _XT={}
@@ -59,30 +59,30 @@ local _si=_FLOOR(seed%256)+1 local b0=SBOX[_si] local b1=SBOX[_FLOOR(seed/256)%2
 local mixed=_FLOOR((b0*16777216+b1*65536+b2*256+b3)%2147483647) if mixed>0 then seed=mixed end
 local st=_ks(seed,50) local k1,k2a,pk={},{},{} for i=1,16 do k1[i]=(st[i]%255)+1 k2a[i]=(st[16+i]%255)+1 pk[i]=(st[32+i]%255)+1 end return k1,k2a,pk,(st[49]%7)+1,(st[50]%255)+1 end
 local function _proto_k(idx) local seed=_FLOOR((k2 or 0)+idx*3000017+23)%2147483647 if seed<1 then seed=1 end local st=_ks(seed,2) return (st[1]%255)+1,(st[2]%26)+3 end
-local _PROG2_IDX={15,12,27,16,10,17,6,13,5,32,31,23,22,26,25,30,24,14,7,28,8,18,11,21,9,4,20,3,29,2,1,19}
+local _PROG2_IDX={10,9,22,24,31,8,3,20,19,17,16,6,30,25,21,4,12,1,18,28,27,2,23,26,32,11,15,14,13,7,5,29}
 local _protoSBOX={} local _protoH1={} local _protoH={} local _protoInv={}
 local function _getProtoSBOX(idx) local s=_protoSBOX[idx] if s then return s end local seed=_FLOOR((k2 or 0)+idx*13337)%2147483647 if seed<1 then seed=1 end local sbox={} for i=0,255 do sbox[i]=i end local st=seed for i=255,1,-1 do st=_FLOOR(16807*st)%2147483647 local j=st%(i+1) sbox[i],sbox[j]=sbox[j],sbox[i] end _protoSBOX[idx]=sbox return sbox end
 local function _getProtoH(idx,lv) local ph=_protoH[idx] if ph and ph[lv] then return ph[lv] end local sbox=_getProtoSBOX(idx) local seed=_FLOOR((k2 or 0)+idx*77777+lv*99991)%2147483647 if seed<1 then seed=1 end local arr={} for i=0,255 do arr[i]=i end local st=seed for i=255,1,-1 do st=_FLOOR(16807*st)%2147483647 local j=st%(i+1) arr[i],arr[j]=arr[j],arr[i] end local result={} for i=0,255 do result[i]=sbox[arr[i]] end if not ph then ph={} _protoH[idx]=ph end ph[lv]=result return result end
 local function _getProtoInv(idx,lv) local pi=_protoInv[idx] if pi and pi[lv] then return pi[lv] end local h=_getProtoH(idx,lv) local inv={} for i=0,255 do inv[h[i]]=i end if not pi then pi={} _protoInv[idx]=pi end pi[lv]=inv return inv end
 local function _getProtoH1(idx) local h=_protoH1[idx] if h then return h end local sbox=_getProtoSBOX(idx) local seed=_FLOOR((k2 or 0)+idx*7000003)%2147483647 if seed<1 then seed=1 end local st=_ks(seed,32*3+100) local h1={} local used={} for op=1,32 do local key local tries=0 repeat local base=(op-1)*3+tries key=st[(base%#st)+1]%256 if key==0 then key=1 end key=sbox[key] tries=tries+1 if tries>500 then break end until not used[key] used[key]=true h1[key]=_PROG2_IDX[op] end _protoH1[idx]=h1 return h1 end
-local CONST={{"h","bcf3","4c1a"},{"h","207df78","7bbbadbe91242"}}
+local CONST={{"h","37b7","3b20"},{"h","8edc1716","90b3affcf50a"}}
 local _constCache={}
 local function _CONST(i) local c=_constCache[i] if c~=nil then return c end local e=CONST[i] if type(e)=="table" then if e[1]=="n" then _constCache[i]=e[2] return e[2] end if e[1]=="nd" then local hex=e[2] local k1,k2a,pk,rot,kk=_gk(i,0,5) local n=_FLOOR(#hex/2) local pw=2^rot local pw2=2^(8-rot) local buf={} for j=1,n do local b=tonumber(string.sub(hex,j*2-1,j*2),16) or 0 b=_bx(b,pk[((j-1)%#pk)+1]) b=b-kk if b<0 then b=b+256 end b=_bx(b,k2a[((j-1)%#k2a)+1]) local lo=(b*pw)%256 local hi=_FLOOR(b/pw2) b=_FLOOR((lo+hi)%256) b=_bx(b,k1[((j-1)%#k1)+1]) buf[j]=_cc(b) end local v=tonumber(table.concat(buf)) or 0 _constCache[i]=v return v end if e[1]=="h" then local hex=e[2]..e[3] local k1,k2a,pk,rot,kk=_gk(i,0,3) local n=_FLOOR(#hex/2) local pw=2^rot local pw2=2^(8-rot) local buf={} for j=1,n do local b=tonumber(string.sub(hex,j*2-1,j*2),16) or 0 b=_bx(b,pk[((j-1)%#pk)+1]) b=b-kk if b<0 then b=b+256 end b=_bx(b,k2a[((j-1)%#k2a)+1]) local lo=(b*pw)%256 local hi=_FLOOR(b/pw2) b=_FLOOR((lo+hi)%256) b=_bx(b,k1[((j-1)%#k1)+1]) buf[j]=_cc(b) end local r=table.concat(buf) _constCache[i]=r return r end end _constCache[i]=e return e end
 local function _GLOB(a) local k=_CONST(a) local v=_NATIVE[k] if v~=nil then return v end if _GREF~=nil then v=_GREF[k] if v~=nil then return v end end return _U end
 local function _SET_GLOB(a,v) local k=_CONST(a) if _GREF~=nil then _GREF[k]=v end end
-local STRS={{{"0480540ca918c382cebd3295b21ddb0ae5feb4ac6b1f349a4f1ff0ad9085752ae41949ecebbf36d9ce87cab7ad5852ebc0c2e1","edeb3eab821c549f"},{"a115cbdc8c6e9eb3c414760976340ed30","dcdcfd8448d69b0f448be0e4a13e2f7ad26ebf0549929e8c44f7ddd69acbeef294de81054a99db3eeb9c7"},{"1868faf9b5e4606ab37d772c3f37cb250018c21","145a602689315072ea74d335dc0323a0125ce8238b30f8da4fd66ea8ce91910c1256e5a6a4fa348"},{"26a87cf6cc04453887a58f273482001f97498ca62d808944c694ae3b054e91cf161dfd06ed708","8a4878843d6b01dcf70c04f2187ed31b9386e20cc"}},{{"86b88","f2568ebac"},{"964ba99","e4c72b3"},{"6993f","1d130cfca"},{"fbea","93fafba9c0"}}}
+local STRS={{{"83fbc0b1e04170bd6c42c266caf2c29","cd404f081033d34c12faded62190e3d0c53485f61c32d0b216ca1169156538fb161066be2c37264bd87c98b"},{"2408db4b27e536086e144043421af65ffefcdd7","13b158e88b64aa4c39ca82c652e862b7503136eb46ec0c665f22efe51503cb1a5030bb4089de797"},{"32ebd65ca6b1aaede9b7641d07d23fa39329b6fce0ba11e568d5a22519ba9d839242d73c609a2f22e9edcc43006f86c27e357f","3d601f72ed9fbed5"},{"c90c0fe4ed076fde3a177445ff5ef30557318f67e81b35fec8ad8f6584ff4a844b53136296a63df93a0e16f01b51fd8fd801ac669698c","fde034bfa"}},{{"62d67","d6b62ec15"},{"11e76a26","3bda4f"},{"cefa","01b9ed23f5"},{"3f863b2ddf","33a0"}}}
 local _cache={}
 local _lastHash=5381
 local function _S(i) local c=_cache[i] if c then return c end _scnt=_scnt+1 local dk=_FLOOR(i*31+_lastHash*7+_sdv+_scnt*17+_K2R*13)%65536 _sc=_FLOOR(_sc*65+12345+dk)%65536 local _v=_FLOOR(_sc%#STRS[i])+1 local e=STRS[i][_v] if not e then return "" end local hex=e[1]..e[2] local k1,k2a,pk,rot,kk=_gk(i,_v-1,1) local n=_FLOOR(#hex/2) local pw=2^rot local pw2=2^(8-rot) local buf={} local h=5381 for j=1,n do local b=tonumber(string.sub(hex,j*2-1,j*2),16) or 0 b=_bx(b,pk[((j-1)%#pk)+1]) b=b-kk if b<0 then b=b+256 end b=_bx(b,k2a[((j-1)%#k2a)+1]) local lo=(b*pw)%256 local hi=_FLOOR(b/pw2) b=_FLOOR((lo+hi)%256) b=_bx(b,k1[((j-1)%#k1)+1]) local ch=_cc(b) buf[j]=ch h=(h*33+string.byte(ch,1))%4294967296 end local r=table.concat(buf) _lastHash=h _cache[i]=r return r end
 local PROTO={{
-    "99,207,179,177,29,248,193",
-    "4,25,45,65,86,105,126",
-    "25,60,95,130,165,200,236",
-    "9,64,119,174,229,28,83",
-    {},{6,2,7,5,4,1,3},3,6,24
+    "90,172,18,92,92,235,56",
+    "115,146,177,209,240,14,44",
+    "121,153,185,218,249,25,57",
+    "95,137,179,221,7,49,91",
+    {},{2,3,4,5,1,7,6},14,3,11
   }}
 local _up=_NATIVE.unpack
-local PROG2={{{24,-1}},{{31,-1},{23,208}},{{29,-1},{23,208}},{{10,208},{23,163}},{{8,-1},{23,208}},{{6,-1},{23,208}},{{24,-1}},{{26,-1}},{{19,-1},{23,208}},{{4,-1},{23,208}},{{27,208},{23,163}},{{2,1},{23,208}},{{7,-1},{23,208}},{{22,-1}},{{1,208},{23,163}},{{3,-1},{23,208}},{{5,-1},{23,208}},{{9,208},{23,163}},{{24,-1}},{{24,0}},{{28,208},{23,163}},{{18,208},{23,163}},{{16,208},{23,163}},{{21,-1,-2},{23,208}},{{14,-1},{23,208}},{{13,-1},{23,208}},{{2,0},{23,208}},{{25,-1}},{{30,-1,-2}},{{20,-1},{23,208}},{{17,-1},{23,208}},{{15,-1},{23,208}}}
+local PROG2={{{22,-1}},{{9,240},{23,75}},{{6,-1},{23,240}},{{20,-1},{23,240}},{{24,-1}},{{16,240},{23,75}},{{31,-1},{23,240}},{{5,-1},{23,240}},{{2,1},{23,240}},{{1,240},{23,75}},{{10,240},{23,75}},{{21,-1,-2},{23,240}},{{30,-1,-2}},{{29,-1},{23,240}},{{24,0}},{{17,-1},{23,240}},{{15,-1},{23,240}},{{24,-1}},{{8,-1},{23,240}},{{7,-1},{23,240}},{{14,-1},{23,240}},{{2,0},{23,240}},{{27,240},{23,75}},{{3,-1},{23,240}},{{13,-1},{23,240}},{{28,240},{23,75}},{{26,-1}},{{25,-1}},{{24,-1}},{{18,240},{23,75}},{{4,-1},{23,240}},{{19,-1},{23,240}}}
 local function _V(x,a,b,c) if x>=0 then return x end if x==-1 then return a end if x==-2 then return b end return c end
 local function _M2(v,prog,a,b,c) local pc2=1 local n=#prog while pc2<=n do local ins=prog[pc2] local op=ins[1] if op==0 then return end
 if op==1 then v.sp=v.sp+1 v.st[v.sp]=nil
@@ -136,6 +136,6 @@ if _steps>_STEP_HARD_LIMIT then _TIMEOUT_HIT=true _ABORT=true return end local i
 _RO=function(fnId,args,argc) local fn=OUTER_FUNCS[fnId] if not fn then return end if not fn.code then return end local OL={} local n0=argc or fn.paramCount for i=1,n0 do OL[i]=args[i] end local OS={} return _OM2(OL,OS,fn.code) end
 R=function(idx,args,parent) _TIMEOUT_HIT=false _ABORT=false return _RO(idx or 1,args or {},nil) end
 local _rok,_rerr=pcall(function() R(1,{}) end)
-if not _rok then _ERR("[DTKD] 执行错误: "..tostring(_rerr)) end
-if _TIMEOUT_HIT then _ERR("[DTKD] 已中断: 超时") end
+if not _rok then _ERR("[神之] 执行错误: "..tostring(_rerr)) end
+if _TIMEOUT_HIT then _ERR("[神之] 已中断: 超时") end
 -- END
