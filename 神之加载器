@@ -1,5 +1,5 @@
--- by 神之 · v20.0.0
--- BEGIN
+-- 黑客 神之 · v20.0.0
+-- 神之混淆技术NB
 local _LOG=function() end
 local _ERR=(type(warn)=="function" and warn) or (type(print)=="function" and print) or function() end
 local _FLOOR=function(x) if type(x)~="number" then return 0 end return x-x%1 end
@@ -21,7 +21,7 @@ do if type(getgenv)=="function" then pcall(function() local g=getgenv() if type(
 if _GREF==nil and type(getfenv)=="function" then pcall(function() _GREF=getfenv() end) end
 if _GREF==nil then _GREF=_G or {} end end
 local _U; pcall(function() local mt={} mt.__index=function(t,k) local o=setmetatable({},mt) rawset(t,k,o) return o end mt.__call=function(t,...) return setmetatable({},mt) end mt.__newindex=function(t,k,v) rawset(t,k,v) end _U=setmetatable({},mt) end)
-local _L1H="01018001003f0103e101023a000000"
+local _L1H="0102af010150010047010342000000"
 local L1P={}
 do local _n=#_L1H local _i=1 while _i+1<=_n do local _h1=string.byte(_L1H,_i) local _h2=string.byte(_L1H,_i+1) if _h1<=57 then _h1=_h1-48 else _h1=_h1-87 end if _h2<=57 then _h2=_h2-48 else _h2=_h2-87 end L1P[#L1P+1]=_h1*16+_h2 _i=_i+2 end end
 local _XT={}
@@ -59,30 +59,30 @@ local _si=_FLOOR(seed%256)+1 local b0=SBOX[_si] local b1=SBOX[_FLOOR(seed/256)%2
 local mixed=_FLOOR((b0*16777216+b1*65536+b2*256+b3)%2147483647) if mixed>0 then seed=mixed end
 local st=_ks(seed,50) local k1,k2a,pk={},{},{} for i=1,16 do k1[i]=(st[i]%255)+1 k2a[i]=(st[16+i]%255)+1 pk[i]=(st[32+i]%255)+1 end return k1,k2a,pk,(st[49]%7)+1,(st[50]%255)+1 end
 local function _proto_k(idx) local seed=_FLOOR((k2 or 0)+idx*3000017+23)%2147483647 if seed<1 then seed=1 end local st=_ks(seed,2) return (st[1]%255)+1,(st[2]%26)+3 end
-local _PROG2_IDX={10,9,22,24,31,8,3,20,19,17,16,6,30,25,21,4,12,1,18,28,27,2,23,26,32,11,15,14,13,7,5,29}
+local _PROG2_IDX={19,10,16,3,7,1,26,31,17,18,13,21,8,29,28,15,14,23,24,27,4,12,22,9,11,20,2,32,30,6,25,5}
 local _protoSBOX={} local _protoH1={} local _protoH={} local _protoInv={}
 local function _getProtoSBOX(idx) local s=_protoSBOX[idx] if s then return s end local seed=_FLOOR((k2 or 0)+idx*13337)%2147483647 if seed<1 then seed=1 end local sbox={} for i=0,255 do sbox[i]=i end local st=seed for i=255,1,-1 do st=_FLOOR(16807*st)%2147483647 local j=st%(i+1) sbox[i],sbox[j]=sbox[j],sbox[i] end _protoSBOX[idx]=sbox return sbox end
 local function _getProtoH(idx,lv) local ph=_protoH[idx] if ph and ph[lv] then return ph[lv] end local sbox=_getProtoSBOX(idx) local seed=_FLOOR((k2 or 0)+idx*77777+lv*99991)%2147483647 if seed<1 then seed=1 end local arr={} for i=0,255 do arr[i]=i end local st=seed for i=255,1,-1 do st=_FLOOR(16807*st)%2147483647 local j=st%(i+1) arr[i],arr[j]=arr[j],arr[i] end local result={} for i=0,255 do result[i]=sbox[arr[i]] end if not ph then ph={} _protoH[idx]=ph end ph[lv]=result return result end
 local function _getProtoInv(idx,lv) local pi=_protoInv[idx] if pi and pi[lv] then return pi[lv] end local h=_getProtoH(idx,lv) local inv={} for i=0,255 do inv[h[i]]=i end if not pi then pi={} _protoInv[idx]=pi end pi[lv]=inv return inv end
 local function _getProtoH1(idx) local h=_protoH1[idx] if h then return h end local sbox=_getProtoSBOX(idx) local seed=_FLOOR((k2 or 0)+idx*7000003)%2147483647 if seed<1 then seed=1 end local st=_ks(seed,32*3+100) local h1={} local used={} for op=1,32 do local key local tries=0 repeat local base=(op-1)*3+tries key=st[(base%#st)+1]%256 if key==0 then key=1 end key=sbox[key] tries=tries+1 if tries>500 then break end until not used[key] used[key]=true h1[key]=_PROG2_IDX[op] end _protoH1[idx]=h1 return h1 end
-local CONST={{"h","37b7","3b20"},{"h","8edc1716","90b3affcf50a"}}
+local CONST={{"h","088e","9a41"},{"h","04e6f08","896965187aedc"}}
 local _constCache={}
 local function _CONST(i) local c=_constCache[i] if c~=nil then return c end local e=CONST[i] if type(e)=="table" then if e[1]=="n" then _constCache[i]=e[2] return e[2] end if e[1]=="nd" then local hex=e[2] local k1,k2a,pk,rot,kk=_gk(i,0,5) local n=_FLOOR(#hex/2) local pw=2^rot local pw2=2^(8-rot) local buf={} for j=1,n do local b=tonumber(string.sub(hex,j*2-1,j*2),16) or 0 b=_bx(b,pk[((j-1)%#pk)+1]) b=b-kk if b<0 then b=b+256 end b=_bx(b,k2a[((j-1)%#k2a)+1]) local lo=(b*pw)%256 local hi=_FLOOR(b/pw2) b=_FLOOR((lo+hi)%256) b=_bx(b,k1[((j-1)%#k1)+1]) buf[j]=_cc(b) end local v=tonumber(table.concat(buf)) or 0 _constCache[i]=v return v end if e[1]=="h" then local hex=e[2]..e[3] local k1,k2a,pk,rot,kk=_gk(i,0,3) local n=_FLOOR(#hex/2) local pw=2^rot local pw2=2^(8-rot) local buf={} for j=1,n do local b=tonumber(string.sub(hex,j*2-1,j*2),16) or 0 b=_bx(b,pk[((j-1)%#pk)+1]) b=b-kk if b<0 then b=b+256 end b=_bx(b,k2a[((j-1)%#k2a)+1]) local lo=(b*pw)%256 local hi=_FLOOR(b/pw2) b=_FLOOR((lo+hi)%256) b=_bx(b,k1[((j-1)%#k1)+1]) buf[j]=_cc(b) end local r=table.concat(buf) _constCache[i]=r return r end end _constCache[i]=e return e end
 local function _GLOB(a) local k=_CONST(a) local v=_NATIVE[k] if v~=nil then return v end if _GREF~=nil then v=_GREF[k] if v~=nil then return v end end return _U end
 local function _SET_GLOB(a,v) local k=_CONST(a) if _GREF~=nil then _GREF[k]=v end end
-local STRS={{{"83fbc0b1e04170bd6c42c266caf2c29","cd404f081033d34c12faded62190e3d0c53485f61c32d0b216ca1169156538fb161066be2c37264bd87c98b"},{"2408db4b27e536086e144043421af65ffefcdd7","13b158e88b64aa4c39ca82c652e862b7503136eb46ec0c665f22efe51503cb1a5030bb4089de797"},{"32ebd65ca6b1aaede9b7641d07d23fa39329b6fce0ba11e568d5a22519ba9d839242d73c609a2f22e9edcc43006f86c27e357f","3d601f72ed9fbed5"},{"c90c0fe4ed076fde3a177445ff5ef30557318f67e81b35fec8ad8f6584ff4a844b53136296a63df93a0e16f01b51fd8fd801ac669698c","fde034bfa"}},{{"62d67","d6b62ec15"},{"11e76a26","3bda4f"},{"cefa","01b9ed23f5"},{"3f863b2ddf","33a0"}}}
+local STRS={{{"7e5b3eb8d14276cc0a2b56139168a64800a0be39caa6","902c14b14ff3288b3dcbfcc6023ac82588290ad0b488f505a8e66db0e3c6c83b16cc5197d8"},{"e046ab68d5c48b0829579fde03fa517b03048b0817bd1210aa355dc6a122735b00fda8c8971d10d1290de77c1abdd69ca40030cb979ef308f","bbcf0"},{"c9f5c","6b1381d4c5ac56e31bcafaf1650451dfa45e0fa7f59355a89b36bbcf254e50e265df01ebf71c54142508cc7662c519d21bdf0ee535a234b3c"},{"ccde644fc1ed4db6e979c4fe1fe5981e1353a48f4cff5e46e6c448eed3b4d55f0d806a0e4d3e52c4e9f415230d63efd9554b","3a004d311db60497b3"}},{{"4615","4aff86738e"},{"a046de","46121403"},{"fec3d4a","ec3ec12"},{"9920b","0f9ae87b0"}}}
 local _cache={}
 local _lastHash=5381
 local function _S(i) local c=_cache[i] if c then return c end _scnt=_scnt+1 local dk=_FLOOR(i*31+_lastHash*7+_sdv+_scnt*17+_K2R*13)%65536 _sc=_FLOOR(_sc*65+12345+dk)%65536 local _v=_FLOOR(_sc%#STRS[i])+1 local e=STRS[i][_v] if not e then return "" end local hex=e[1]..e[2] local k1,k2a,pk,rot,kk=_gk(i,_v-1,1) local n=_FLOOR(#hex/2) local pw=2^rot local pw2=2^(8-rot) local buf={} local h=5381 for j=1,n do local b=tonumber(string.sub(hex,j*2-1,j*2),16) or 0 b=_bx(b,pk[((j-1)%#pk)+1]) b=b-kk if b<0 then b=b+256 end b=_bx(b,k2a[((j-1)%#k2a)+1]) local lo=(b*pw)%256 local hi=_FLOOR(b/pw2) b=_FLOOR((lo+hi)%256) b=_bx(b,k1[((j-1)%#k1)+1]) local ch=_cc(b) buf[j]=ch h=(h*33+string.byte(ch,1))%4294967296 end local r=table.concat(buf) _lastHash=h _cache[i]=r return r end
 local PROTO={{
-    "90,172,18,92,92,235,56",
-    "115,146,177,209,240,14,44",
-    "121,153,185,218,249,25,57",
-    "95,137,179,221,7,49,91",
-    {},{2,3,4,5,1,7,6},14,3,11
+    "129,13,33,133,143,39,183",
+    "230,15,55,96,136,178,219",
+    "228,5,39,73,107,141,175",
+    "207,1,51,101,151,201,251",
+    {},{6,3,1,2,7,5,4},24,5,19
   }}
 local _up=_NATIVE.unpack
-local PROG2={{{22,-1}},{{9,240},{23,75}},{{6,-1},{23,240}},{{20,-1},{23,240}},{{24,-1}},{{16,240},{23,75}},{{31,-1},{23,240}},{{5,-1},{23,240}},{{2,1},{23,240}},{{1,240},{23,75}},{{10,240},{23,75}},{{21,-1,-2},{23,240}},{{30,-1,-2}},{{29,-1},{23,240}},{{24,0}},{{17,-1},{23,240}},{{15,-1},{23,240}},{{24,-1}},{{8,-1},{23,240}},{{7,-1},{23,240}},{{14,-1},{23,240}},{{2,0},{23,240}},{{27,240},{23,75}},{{3,-1},{23,240}},{{13,-1},{23,240}},{{28,240},{23,75}},{{26,-1}},{{25,-1}},{{24,-1}},{{18,240},{23,75}},{{4,-1},{23,240}},{{19,-1},{23,240}}}
+local PROG2={{{5,-1},{23,16}},{{24,0}},{{3,-1},{23,16}},{{26,-1}},{{24,-1}},{{31,-1},{23,16}},{{4,-1},{23,16}},{{18,16},{23,21}},{{28,16},{23,21}},{{2,1},{23,16}},{{19,-1},{23,16}},{{9,16},{23,21}},{{17,-1},{23,16}},{{21,-1,-2},{23,16}},{{20,-1},{23,16}},{{2,0},{23,16}},{{8,-1},{23,16}},{{15,-1},{23,16}},{{1,16},{23,21}},{{10,16},{23,21}},{{16,16},{23,21}},{{27,16},{23,21}},{{22,-1}},{{24,-1}},{{24,-1}},{{6,-1},{23,16}},{{25,-1}},{{14,-1},{23,16}},{{13,-1},{23,16}},{{30,-1,-2}},{{7,-1},{23,16}},{{29,-1},{23,16}}}
 local function _V(x,a,b,c) if x>=0 then return x end if x==-1 then return a end if x==-2 then return b end return c end
 local function _M2(v,prog,a,b,c) local pc2=1 local n=#prog while pc2<=n do local ins=prog[pc2] local op=ins[1] if op==0 then return end
 if op==1 then v.sp=v.sp+1 v.st[v.sp]=nil
